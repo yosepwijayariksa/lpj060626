@@ -214,8 +214,13 @@
   @media (max-width: 768px) {
     body { padding: 10px; }
     .container { padding: 20px; border-radius: 16px; }
-    .toggle-container { top: 10px; right: 10px; padding: 6px 12px; }
-    .toggle-label { font-size: 11px; }
+    .toggle-container { 
+      bottom: 12px; right: 12px; 
+      padding: 6px 12px; gap: 6px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+    }
+    .toggle-label { font-size: 11px; display: none; }
     .header h1 { font-size: 24px; }
     .summary-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
     .summary-card { padding: 14px; }
@@ -238,16 +243,15 @@
   @media (max-width: 480px) {
     body { padding: 8px; }
     .container { padding: 15px; }
-    .summary-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
-    .summary-card .value { font-size: 14px; }
-    .monthly-table { font-size: 11px; }
-    .monthly-table thead th { font-size: 8px; }
-    .monthly-table tbody td { padding: 6px; font-size: 11px; }
-    .bar-chart { height: 150px; }
-    .bars { height: 100px; }
-    .header h1 { font-size: 20px; }
-    .header img { width: 80px !important; height: 80px !important; }
-    .header h2 { font-size: 10px !important; letter-spacing: 0.5px !important; }
+    .toggle-container { 
+      bottom: 10px; right: 10px;
+      padding: 5px 10px; gap: 5px;
+      border-radius: 25px;
+    }
+    .toggle-icon { font-size: 14px; }
+    .toggle-switch { width: 40px; height: 22px; }
+    .toggle-switch::after { width: 18px; height: 18px; top: 2px; left: 2px; }
+    .toggle-switch.active::after { transform: translateX(18px); }
   }
   @media print {
     .toggle-container { display: none; }
