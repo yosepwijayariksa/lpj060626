@@ -254,9 +254,30 @@
     .toggle-switch.active::after { transform: translateX(18px); }
   }
   @media print {
-    .toggle-container { display: none; }
-    body { background: #fff; padding: 0; }
-    .container { box-shadow: none; border: none; }
+    .toggle-container { display: none !important; }
+    button[onclick="downloadPDF()"] { display: none !important; }
+    div[style*="position:fixed"] { display: none !important; }
+    body { background: #fff !important; padding: 0 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    .container { box-shadow: none !important; border: none !important; max-width: 100% !important; padding: 20px !important; }
+    .summary-cards { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; }
+    .summary-card { background: #f8fafc !important; border: 1px solid #e2e8f0 !important; }
+    .monthly-table { display: table !important; width: 100% !important; }
+    .monthly-table tbody tr { display: table-row !important; background: #f8fafc !important; }
+    .monthly-table tbody td { display: table-cell !important; }
+    .bar-chart { display: flex !important; height: 200px !important; }
+    .bar-group { display: flex !important; flex-direction: column !important; align-items: center !important; }
+    .bars { display: flex !important; height: 150px !important; }
+    .bar { display: block !important; }
+    .balance-chart { display: block !important; }
+    .balance-line { display: flex !important; }
+    .balance-bar-bg { display: block !important; }
+    .balance-bar { display: flex !important; color: #fff !important; }
+    .notes { display: block !important; background: #fefce8 !important; border: 1px solid #fde68a !important; }
+    .notes li { display: list-item !important; }
+    .footer { display: block !important; }
+    .stamp { display: inline-block !important; }
+    h1, h2, h3, h4, h5, h6, p, div, span, td, th, li, button { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    img { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
   }
 </style>
 </head>
@@ -298,7 +319,7 @@
   </div>
 
   <!-- Summary Cards -->
-  <div class="summary-cards">
+  <div class="summary-cards" style="page-break-inside:avoid;">
     <div class="summary-card income">
       <div class="icon">📈</div>
       <div class="label">Total Penerimaan</div>
@@ -383,11 +404,12 @@
     <p>Dokumen ini disusun secara transparan untuk seluruh warga RT 06 RW 029</p>
     <p>Silahkan laporkan jika ada data yang kurang tepat</p>
     <div class="stamp">Dikeluarkan: 2 Juli 2026 | Disahkan oleh Ketua RT 006</div>
-    <!-- Download PDF Button -->
-    <div style="margin-top:20px;">
-      <button onclick="downloadPDF()" style="background:linear-gradient(135deg,#FF6B35,#FF8E53); color:#fff; border:none; padding:12px 30px; border-radius:30px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 15px rgba(255,107,53,0.3); transition:all 0.3s;">Download PDF</button>
-    </div>
   </div>
+</div>
+
+<!-- Floating Download PDF Button -->
+<div style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:999;">
+  <button onclick="downloadPDF()" style="background:linear-gradient(135deg,#FF6B35,#FF8E53); color:#fff; border:none; padding:12px 30px; border-radius:30px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 6px 25px rgba(255,107,53,0.4); transition:all 0.3s; white-space:nowrap;">Download PDF</button>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" onerror="console.log('html2pdf loaded from fallback')"></script>
