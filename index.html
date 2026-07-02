@@ -258,14 +258,11 @@
 </head>
 <body>
 
-<!-- Dark Mode Toggle + Download PDF -->
-<div class="toggle-container" style="flex-direction:column; gap:8px; padding:10px 16px;">
-  <div style="display:flex; align-items:center; gap:8px;">
-    <span class="toggle-icon" id="modeIcon">☀️</span>
-    <span class="toggle-label" id="modeLabel">Light</span>
-    <div class="toggle-switch" id="toggleSwitch" onclick="toggleDarkMode()"></div>
-  </div>
-  <button id="downloadBtn" onclick="downloadPDF()" style="background:linear-gradient(135deg,#FF6B35,#FF8E53); color:#fff; border:none; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.3s; white-space:nowrap;">📥 Download PDF</button>
+<!-- Dark Mode Toggle (tanpa Download PDF) -->
+<div class="toggle-container">
+  <span class="toggle-icon" id="modeIcon">☀️</span>
+  <span class="toggle-label" id="modeLabel">Light</span>
+  <div class="toggle-switch" id="toggleSwitch" onclick="toggleDarkMode()"></div>
 </div>
 
 <div class="container">
@@ -382,6 +379,10 @@
     <p>Dokumen ini disusun secara transparan untuk seluruh warga RT 06 RW 029</p>
     <p>Silahkan laporkan jika ada data yang kurang tepat</p>
     <div class="stamp">Dikeluarkan: 2 Juli 2026 | Disahkan oleh Ketua RT 006</div>
+    <!-- Download PDF Button -->
+    <div style="margin-top:20px;">
+      <button onclick="downloadPDF()" style="background:linear-gradient(135deg,#FF6B35,#FF8E53); color:#fff; border:none; padding:12px 30px; border-radius:30px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 15px rgba(255,107,53,0.3); transition:all 0.3s;">Download PDF</button>
+    </div>
   </div>
 </div>
 
