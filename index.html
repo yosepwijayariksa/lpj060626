@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laporan Keuangan Semester 1 - RW 006 / RT 029</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  /* === DEFAULT: LIGHT MODE === */
+  body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f5f7fa, #e4e9f2);
+    color: #1a1a2e;
+    min-height: 100vh;
+    padding: 20px;
+    transition: all 0.4s ease;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: all 0.4s ease;
+  }
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 2px solid #e8ecf1;
+    transition: all 0.4s ease;
+  }
+  .header .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #FF6B35, #FF8E53);
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+  .header h1 {
+    font-size: 36px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FF6B35, #FFD93D, #6BCB77);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 8px;
+  }
+  .header h2 { font-size: 15px; font-weight: 400; color: #64748b; }
+  .header .period { font-size: 13px; color: #94a3b8; margin-top: 8px; }
+
+  .summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 40px; }
+  .summary-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+    transition: all 0.4s ease;
+  }
+  .summary-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .summary-card .label { font-size: 11px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .summary-card .value { font-size: 22px; font-weight: 800; }
+  .summary-card.income .value { color: #16a34a; }
+  .summary-card.expense .value { color: #dc2626; }
+  .summary-card.balance .value { color: #d97706; }
+  .summary-card.percentage .value { color: #0891b2; }
+
+  .section-title {
+    font-size: 18px; font-weight: 700; margin-bottom: 20px;
+    display: flex; align-items: center; gap: 10px;
+    color: #1e293b;
+  }
+  .section-title::before {
+    content: ''; width: 4px; height: 20px;
+    background: linear-gradient(135deg, #FF6B35, #FFD93D); border-radius: 2px;
+  }
+
+  .monthly-table { width: 100%; border-collapse: separate; border-spacing: 0 8px; margin-bottom: 40px; }
+  .monthly-table thead th {
+    padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 700;
+    color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .monthly-table tbody tr { background: #f8fafc; border-radius: 12px; transition: all 0.3s; }
+  .monthly-table tbody tr:hover { background: #f1f5f9; }
+  .monthly-table tbody td { padding: 14px 16px; font-size: 14px; color: #334155; }
+  .monthly-table tbody td:first-child { border-radius: 12px 0 0 12px; font-weight: 600; color: #1e293b; }
+  .monthly-table tbody td:last-child { border-radius: 0 12px 12px 0; }
+  .monthly-table tbody tr.total-row { background: #fef3c7; border: 1px solid #fbbf24; }
+  .monthly-table tbody tr.total-row td { font-weight: 700; color: #92400e; }
+
+  .income { color: #16a34a; font-weight: 600; }
+  .expense { color: #dc2626; font-weight: 600; }
+  .balance { color: #d97706; font-weight: 700; }
+
+  .chart-section { margin-bottom: 40px; }
+  .bar-chart { display: flex; align-items: flex-end; gap: 12px; height: 220px; padding: 20px 0; }
+  .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .bars { display: flex; gap: 4px; align-items: flex-end; width: 100%; height: 180px; }
+  .bar { flex: 1; border-radius: 6px 6px 0 0; min-height: 5px; transition: height 0.5s; }
+  .bar.income-bar { background: linear-gradient(180deg, #22c55e, #16a34a); }
+  .bar.expense-bar { background: linear-gradient(180deg, #f87171, #dc2626); }
+  .bar-label { font-size: 11px; color: #94a3b8; font-weight: 500; }
+  .chart-legend { display: flex; justify-content: center; gap: 30px; margin-top: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #64748b; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 4px; }
+  .legend-dot.income { background: #22c55e; }
+  .legend-dot.expense { background: #f87171; }
+
+  .balance-chart { margin-bottom: 40px; }
+  .balance-line { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .balance-label { width: 60px; font-size: 12px; color: #94a3b8; text-align: right; }
+  .balance-bar-bg { flex: 1; height: 30px; background: #f1f5f9; border-radius: 15px; overflow: hidden; }
+  .balance-bar { height: 100%; border-radius: 15px; display: flex; align-items: center; padding: 0 12px; font-size: 12px; font-weight: 700; color: #fff; transition: width 0.5s; }
+  .balance-amount { width: 130px; font-size: 13px; font-weight: 700; color: #d97706; text-align: right; }
+
+  .notes { background: #fefce8; border: 1px solid #fde68a; border-radius: 12px; padding: 20px; margin-bottom: 40px; }
+  .notes li { list-style: none; padding: 6px 0; font-size: 13px; color: #713f12; border-bottom: 1px solid rgba(0,0,0,0.05); }
+  .notes li:last-child { border-bottom: none; }
+  .notes .dot { color: #d97706; margin-right: 8px; }
+
+  .footer { text-align: center; padding-top: 30px; border-top: 2px solid #e2e8f0; color: #94a3b8; font-size: 12px; }
+  .footer .stamp { display: inline-block; margin-top: 16px; padding: 8px 20px; border: 2px dashed #cbd5e1; border-radius: 8px; font-size: 11px; color: #94a3b8; }
+
+  /* === DARK MODE TOGGLE === */
+  .toggle-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    padding: 8px 16px;
+    border-radius: 50px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    transition: all 0.4s ease;
+  }
+  .toggle-label { font-size: 13px; font-weight: 600; color: #64748b; }
+  .toggle-switch {
+    width: 50px;
+    height: 26px;
+    background: #cbd5e1;
+    border-radius: 13px;
+    position: relative;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  .toggle-switch::after {
+    content: '';
+    width: 22px;
+    height: 22px;
+    background: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: transform 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .toggle-switch.active { background: #6366f1; }
+  .toggle-switch.active::after { transform: translateX(24px); }
+  .toggle-icon { font-size: 18px; }
+
+  /* === DARK MODE === */
+  body.dark {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    color: #e2e8f0;
+  }
+  body.dark .container {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    backdrop-filter: blur(20px);
+  }
+  body.dark .header { border-bottom-color: rgba(255,255,255,0.1); }
+  body.dark .header h2 { color: rgba(255,255,255,0.6); }
+  body.dark .header .period { color: rgba(255,255,255,0.4); }
+  body.dark .summary-card { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1); }
+  body.dark .summary-card .label { color: rgba(255,255,255,0.5); }
+  body.dark .section-title { color: #fff; }
+  body.dark .monthly-table thead th { color: rgba(255,255,255,0.4); }
+  body.dark .monthly-table tbody tr { background: rgba(255,255,255,0.05); }
+  body.dark .monthly-table tbody tr:hover { background: rgba(255,255,255,0.1); }
+  body.dark .monthly-table tbody td { color: rgba(255,255,255,0.8); }
+  body.dark .monthly-table tbody td:first-child { color: #fff; }
+  body.dark .monthly-table tbody tr.total-row { background: rgba(255,215,0,0.15); border-color: rgba(255,215,0,0.3); }
+  body.dark .monthly-table tbody tr.total-row td { color: #FFD93D; }
+  body.dark .income { color: #6BCB77; }
+  body.dark .expense { color: #FF6B6B; }
+  body.dark .balance { color: #FFD93D; }
+  body.dark .bar-label { color: rgba(255,255,255,0.5); }
+  body.dark .legend-item { color: rgba(255,255,255,0.6); }
+  body.dark .balance-label { color: rgba(255,255,255,0.5); }
+  body.dark .balance-bar-bg { background: rgba(255,255,255,0.05); }
+  body.dark .balance-amount { color: #FFD93D; }
+  body.dark .notes { background: rgba(255,215,0,0.08); border-color: rgba(255,215,0,0.2); }
+  body.dark .notes li { color: rgba(255,255,255,0.7); border-bottom-color: rgba(255,255,255,0.05); }
+  body.dark .footer { border-top-color: rgba(255,255,255,0.1); color: rgba(255,255,255,0.4); }
+  body.dark .footer .stamp { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.3); }
+  body.dark .toggle-container { background: rgba(30,41,59,0.95); border-color: rgba(255,255,255,0.1); }
+  body.dark .toggle-label { color: #e2e8f0; }
+
+  @media (max-width: 768px) {
+    body { padding: 10px; }
+    .container { padding: 20px; border-radius: 16px; }
+    .toggle-container { top: 10px; right: 10px; padding: 6px 12px; }
+    .toggle-label { font-size: 11px; }
+    .header h1 { font-size: 24px; }
+    .summary-cards { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .summary-card { padding: 14px; }
+    .summary-card .value { font-size: 16px; }
+    .monthly-table { font-size: 12px; }
+    .monthly-table thead th { font-size: 9px; padding: 8px; }
+    .monthly-table tbody td { padding: 8px; font-size: 12px; }
+    .section-title { font-size: 15px; }
+    .balance-line { flex-wrap: wrap; gap: 4px; }
+    .balance-label { width: 40px; font-size: 10px; }
+    .balance-amount { width: auto; font-size: 11px; text-align: left; }
+    .balance-bar { font-size: 9px; padding: 0 6px; }
+    .notes li { font-size: 11px; }
+    .footer { font-size: 10px; }
+    /* Header logo responsive */
+    .header .badge { font-size: 10px; padding: 6px 16px; }
+    .header img { width: 100px !important; height: 100px !important; }
+    .header h2 { font-size: 11px !important; }
+  }
+  @media (max-width: 480px) {
+    body { padding: 8px; }
+    .container { padding: 15px; }
+    .summary-cards { grid-template-columns: 1fr 1fr; gap: 8px; }
+    .summary-card .value { font-size: 14px; }
+    .monthly-table { font-size: 11px; }
+    .monthly-table thead th { font-size: 8px; }
+    .monthly-table tbody td { padding: 6px; font-size: 11px; }
+    .bar-chart { height: 150px; }
+    .bars { height: 100px; }
+    .header h1 { font-size: 20px; }
+    .header img { width: 80px !important; height: 80px !important; }
+    .header h2 { font-size: 10px !important; letter-spacing: 0.5px !important; }
+  }
+  @media print {
+    .toggle-container { display: none; }
+    body { background: #fff; padding: 0; }
+    .container { box-shadow: none; border: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Dark Mode Toggle + Download PDF -->
+<div class="toggle-container" style="flex-direction:column; gap:8px; padding:10px 16px;">
+  <div style="display:flex; align-items:center; gap:8px;">
+    <span class="toggle-icon" id="modeIcon">☀️</span>
+    <span class="toggle-label" id="modeLabel">Light</span>
+    <div class="toggle-switch" id="toggleSwitch" onclick="toggleDarkMode()"></div>
+  </div>
+  <button id="downloadBtn" onclick="downloadPDF()" style="background:linear-gradient(135deg,#FF6B35,#FF8E53); color:#fff; border:none; padding:6px 14px; border-radius:20px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.3s; white-space:nowrap;">📥 Download PDF</button>
+</div>
+
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    <div class="badge">Transparan & Akuntabel</div>
+    <h1>Laporan Keuangan Semester 1</h1>
+    <!-- Grand Style: Logo Transparan as Background + Teks Center -->
+    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:10px;">
+      <!-- Container dengan logo transparan sebagai background -->
+      <div style="position:relative; width:100%; max-width:650px; padding:30px 20px; border-radius:16px; overflow:hidden; border:2px solid rgba(255,107,53,0.3); box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+        <!-- Logo sebagai background transparan -->
+        <img src="logo_rt.jpg" alt="Logo RT 06" style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); width:180px; height:180px; border-radius:50%; object-fit:cover; opacity:0.12; filter:grayscale(30%); pointer-events:none;">
+        <!-- Garis Atas -->
+        <div style="width:80%; height:2px; background:linear-gradient(90deg, transparent, #FF6B35, transparent); margin:0 auto 15px auto;"></div>
+        <!-- Teks di atas logo -->
+        <div style="position:relative; z-index:1; text-align:center;">
+          <h2 style="font-size:16px; font-weight:800; letter-spacing:2px; margin-bottom:8px; color:#1e293b;">RUKUN TETANGGA 06 KOMPLEK PERMATA BIRU</h2>
+          <h2 style="font-size:13px; font-weight:600; color:#64748b; margin-bottom:6px;">RUKUN WARGA 029 DESA CIMEKAR KECAMATAN CILEUNYI</h2>
+          <h2 style="font-size:13px; font-weight:600; color:#64748b; margin-bottom:10px;">KABUPATEN BANDUNG</h2>
+          <!-- Garis Bawah -->
+          <div style="width:80%; height:2px; background:linear-gradient(90deg, transparent, #FF6B35, transparent); margin:0 auto 12px auto;"></div>
+          <!-- Sekretariat -->
+          <h2 style="font-size:11px; font-weight:500; color:#94a3b8; letter-spacing:1px;">Sekretariat : Jl. Blue Tiger 2 Komplek Permata Biru Blok T2 RT 06 RW 029 No. 40</h2>
+        </div>
+      </div>
+    </div>
+    <div class="period">Periode: Januari - Juni 2026</div>
+  </div>
+
+  <!-- Summary Cards -->
+  <div class="summary-cards">
+    <div class="summary-card income">
+      <div class="icon">📈</div>
+      <div class="label">Total Penerimaan</div>
+      <div class="value">Rp 34.455.700</div>
+    </div>
+    <div class="summary-card expense">
+      <div class="icon">📉</div>
+      <div class="label">Total Pengeluaran</div>
+      <div class="value">Rp 13.824.000</div>
+    </div>
+    <div class="summary-card balance">
+      <div class="icon">💰</div>
+      <div class="label">Saldo Akhir Juni</div>
+      <div class="value">Rp 3.410.200</div>
+    </div>
+    <div class="summary-card percentage">
+      <div class="icon">📊</div>
+      <div class="label">Rasio Pengeluaran</div>
+      <div class="value">40.1%</div>
+    </div>
+  </div>
+
+  <!-- Monthly Detail -->
+  <div class="section-title">Detail Bulanan</div>
+  <table class="monthly-table">
+    <thead>
+      <tr><th>Bulan</th><th>Penerimaan</th><th>Pengeluaran</th><th>Saldo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Januari</td><td class="income">Rp 5.264.200</td><td class="expense">Rp 1.708.500</td><td class="balance">Rp 3.555.700</td></tr>
+      <tr><td>Februari</td><td class="income">Rp 5.915.700</td><td class="expense">Rp 1.842.500</td><td class="balance">Rp 4.073.200</td></tr>
+      <tr><td>Maret</td><td class="income">Rp 6.373.200</td><td class="expense">Rp 2.019.500</td><td class="balance">Rp 4.353.700</td></tr>
+      <tr><td>April</td><td class="income">Rp 7.213.700</td><td class="expense">Rp 4.953.500</td><td class="balance">Rp 2.260.200</td></tr>
+      <tr><td>Mei</td><td class="income">Rp 4.530.200</td><td class="expense">Rp 1.551.500</td><td class="balance">Rp 2.978.700</td></tr>
+      <tr><td>Juni</td><td class="income">Rp 5.158.700</td><td class="expense">Rp 1.748.500</td><td class="balance">Rp 3.410.200</td></tr>
+      <tr class="total-row"><td>TOTAL</td><td class="income">Rp 34.455.700</td><td class="expense">Rp 13.824.000</td><td class="balance">Rp 3.410.200</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Bar Chart -->
+  <div class="chart-section">
+    <div class="section-title">Grafik Penerimaan vs Pengeluaran</div>
+    <div class="bar-chart">
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:73%"></div><div class="bar expense-bar" style="height:24%"></div></div><div class="bar-label">Jan</div></div>
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:82%"></div><div class="bar expense-bar" style="height:26%"></div></div><div class="bar-label">Feb</div></div>
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:88%"></div><div class="bar expense-bar" style="height:28%"></div></div><div class="bar-label">Mar</div></div>
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:100%"></div><div class="bar expense-bar" style="height:69%"></div></div><div class="bar-label">Apr</div></div>
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:63%"></div><div class="bar expense-bar" style="height:22%"></div></div><div class="bar-label">Mei</div></div>
+      <div class="bar-group"><div class="bars"><div class="bar income-bar" style="height:71%"></div><div class="bar expense-bar" style="height:24%"></div></div><div class="bar-label">Jun</div></div>
+    </div>
+    <div class="chart-legend">
+      <div class="legend-item"><div class="legend-dot income"></div>Penerimaan</div>
+      <div class="legend-item"><div class="legend-dot expense"></div>Pengeluaran</div>
+    </div>
+  </div>
+
+  <!-- Balance Trend -->
+  <div class="balance-chart">
+    <div class="section-title">Tren Saldo Kas RT</div>
+    <div class="balance-line"><div class="balance-label">Jan</div><div class="balance-bar-bg"><div class="balance-bar" style="width:82%;background:linear-gradient(90deg,#22c55e,#06b6d4)">Rp 3.555.700</div></div><div class="balance-amount">Rp 3.555.700</div></div>
+    <div class="balance-line"><div class="balance-label">Feb</div><div class="balance-bar-bg"><div class="balance-bar" style="width:94%;background:linear-gradient(90deg,#22c55e,#06b6d4)">Rp 4.073.200</div></div><div class="balance-amount">Rp 4.073.200</div></div>
+    <div class="balance-line"><div class="balance-label">Mar</div><div class="balance-bar-bg"><div class="balance-bar" style="width:100%;background:linear-gradient(90deg,#f59e0b,#f97316)">Rp 4.353.700</div></div><div class="balance-amount">Rp 4.353.700</div></div>
+    <div class="balance-line"><div class="balance-label">Apr</div><div class="balance-bar-bg"><div class="balance-bar" style="width:52%;background:linear-gradient(90deg,#ef4444,#dc2626)">Rp 2.260.200</div></div><div class="balance-amount">Rp 2.260.200</div></div>
+    <div class="balance-line"><div class="balance-label">Mei</div><div class="balance-bar-bg"><div class="balance-bar" style="width:68%;background:linear-gradient(90deg,#06b6d4,#22c55e)">Rp 2.978.700</div></div><div class="balance-amount">Rp 2.978.700</div></div>
+    <div class="balance-line"><div class="balance-label">Jun</div><div class="balance-bar-bg"><div class="balance-bar" style="width:78%;background:linear-gradient(90deg,#06b6d4,#22c55e)">Rp 3.410.200</div></div><div class="balance-amount">Rp 3.410.200</div></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="section-title">Catatan Penting</div>
+  <div class="notes">
+    <ul>
+      <li><span class="dot">📌</span> Total penerimaan semester 1: <strong style="color:#16a34a">Rp 34.455.700</strong></li>
+      <li><span class="dot">📌</span> Total pengeluaran semester 1: <strong style="color:#dc2626">Rp 13.824.000</strong></li>
+      <li><span class="dot">📌</span> Saldo akhir per 30 Juni 2026: <strong style="color:#d97706">Rp 3.410.200</strong></li>
+      <li><span class="dot">📌</span> Bulan April pengeluaran tertinggi (<strong style="color:#dc2626">Rp 4.953.500</strong>) untuk kegiatan besar</li>
+      <li><span class="dot">📌</span> Rasio pengeluaran: <strong style="color:#0891b2">40.1% (efisien)</strong> — 59.9% penerimaan tersimpan untuk kegiatan selanjutnya 🎉🥳🎊</li>
+    </ul>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Dokumen ini disusun secara transparan untuk seluruh warga RT 06 RW 029</p>
+    <p>Silahkan laporkan jika ada data yang kurang tepat</p>
+    <div class="stamp">Dikeluarkan: 2 Juli 2026 | Disahkan oleh Ketua RT 006</div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" onerror="console.log('html2pdf loaded from fallback')"></script>
+<script>
+// Download PDF Function - Using Browser Print
+function downloadPDF() {
+  // Hide toggle, then print
+  const toggle = document.querySelector('.toggle-container');
+  toggle.style.display = 'none';
+  
+  // Force light mode for clean PDF
+  const wasDark = document.body.classList.contains('dark');
+  if (wasDark) document.body.classList.remove('dark');
+  
+  // Short delay, then trigger print dialog
+  setTimeout(() => {
+    window.print();
+    // Restore after print
+    setTimeout(() => {
+      if (wasDark) document.body.classList.add('dark');
+      toggle.style.display = 'flex';
+    }, 500);
+  }, 300);
+}
+
+// Dark Mode Toggle
+function toggleDarkMode() {
+  const body = document.body;
+  const toggle = document.getElementById('toggleSwitch');
+  const icon = document.getElementById('modeIcon');
+  const label = document.getElementById('modeLabel');
+  
+  body.classList.toggle('dark');
+  toggle.classList.toggle('active');
+  
+  if (body.classList.contains('dark')) {
+    icon.textContent = '🌙';
+    label.textContent = 'Dark';
+    localStorage.setItem('darkMode', 'true');
+  } else {
+    icon.textContent = '☀️';
+    label.textContent = 'Light';
+    localStorage.setItem('darkMode', 'false');
+  }
+}
+
+// Load saved preference
+window.onload = function() {
+  if (localStorage.getItem('darkMode') === 'true') {
+    document.body.classList.add('dark');
+    document.getElementById('toggleSwitch').classList.add('active');
+    document.getElementById('modeIcon').textContent = '🌙';
+    document.getElementById('modeLabel').textContent = 'Dark';
+  }
+};
+</script>
+
+</body>
+</html>
